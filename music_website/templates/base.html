@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        {% if title %}
+            <title>{{ title }} - MusicWebsite</title>
+        {% else %}
+            <title>Welcome to MusicWebsite!</title>
+        {% endif %}
+        <meta name="description" content="MusicWebsite"/>
+        <meta name="keywords" content="music"/>
+    </head>
+    <body>
+        <div>
+            MusicWebsite
+            <a href={{ url_for("index") }}>Home</a>
+            {% if current_user.is_anonymous %}
+            <a href={{ url_for("login") }}>Login</a>
+            {% else %}
+            <a href={{ url_for("logout") }}>Logout</a>
+            {% endif %}
+        </div>
+        <hr/>
+        {% with flashed_messages = get_flashed_messages() %}
+            {% if flashed_messages %}
+                <ul>
+                    {% for message in flashed_messages %}<li>{{ message }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock content %}
+    </body>
+</html>
