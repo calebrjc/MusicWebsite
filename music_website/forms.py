@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, Optional, ValidationError
 
 from music_website import models
 
@@ -26,14 +26,33 @@ class RegistrationForm(FlaskForm):  # type: ignore
     )
     submit = SubmitField("Register")
 
-    def validate_username(self, username: StringField) -> None:
+    def validate_username(self, username_field: StringField) -> None:
         """Raise a ValidationError if the username is already taken."""
-        user = models.User.from_username(username.data)
+        user = models.User.from_username(username_field.data)
         if user is not None:
             raise ValidationError("Please choose another username.")
 
-    def validate_email(self, email: StringField) -> None:
+    def validate_email(self, email_field: StringField) -> None:
         """Raise a ValidationError if the email is already taken."""
-        user = models.User.from_email(email.data)
+        user = models.User.from_email(email_field.data)
+        if user is not None:
+            raise ValidationError("Please use a different email address.")
+
+
+class EditProfileForm(FlaskForm):
+    """Implements input structure and validation for editing profiles in MusicWebsite."""
+    username = StringField("Username", validators=[Optional()])
+    email = StringField("Email", validators=[Optional(), Email()])
+    submit = SubmitField("Submit")
+
+    def validate_username(self, username_field: StringField) -> None:
+        """Raise a ValidationError if the username is already taken."""
+        user = models.User.from_username(username_field.data)
+        if user is not None:
+            raise ValidationError("Please choose another username.")
+
+    def validate_email(self, email_field: StringField) -> None:
+        """Raise a ValidationError if the email is already taken."""
+        user = models.User.from_email(email_field.data)
         if user is not None:
             raise ValidationError("Please use a different email address.")
